@@ -200,8 +200,6 @@ fieldset{border:0;min-width:0}
 .dual{display:grid;grid-template-columns:1.3fr 1fr;gap:12px}
 .dual label{font-size:14px;color:var(--mute);font-weight:500;display:block;margin-bottom:4px}
 select{appearance:none;-webkit-appearance:none;width:100%;min-height:52px;border:1.5px solid var(--line-strong);border-radius:6px;padding:0 38px 0 14px;font-weight:600;font-size:16px;background:var(--sheet) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5l5 5 5-5' fill='none' stroke='%230E2A47' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") no-repeat right 14px center/12px 8px}
-.lock{display:flex;justify-content:space-between;align-items:center;gap:12px;min-height:52px;border-radius:6px;padding:0 14px;background:#FFF6E4;border:1.5px dashed #C98A1E;font-weight:700;font-size:18px}
-.lock em{font-style:normal;font-weight:500;font-size:14px;color:var(--mute)}
 .kpis{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px}
 .kpi{border-top:1px solid var(--rule-2);padding:12px 0;min-width:0}
 .kpi span{display:block;font-size:14px;color:var(--mute);font-weight:500}
@@ -391,7 +389,7 @@ footer{border-top:1px solid var(--rule)}
 
 <div class="wrap">
   <section class="receipt" aria-labelledby="bandH">
-    <div class="stub on-dark"><p class="stub-l">Suku bunga</p><p class="stub-n">11,5%</p><p class="stub-u">per tahun, sama untuk ketiga kredit</p></div>
+    <div class="stub on-dark"><p class="stub-l">Suku bunga</p><p class="stub-n">11,5%</p><p class="stub-u">per tahun sebagai contoh, bisa diubah di kalkulator</p></div>
     <div class="receipt-body">
       <h2 id="bandH">Satu suku bunga, tiga cara hitung</h2>
       <p>Persennya sama, tapi cara bunga dihitung dan dibayar berbeda di tiap kredit. Karena itu angsuran dan total biayanya tidak sama.</p>
@@ -499,7 +497,7 @@ footer{border-top:1px solid var(--rule)}
 <div class="wrap">
   <header class="khead">
     <h1 tabindex="-1">Hitung angsuran sebelum mengajukan</h1>
-    <p class="sec-sub">Pilih jenis kredit, isi plafon dan jangka waktu. Hasilnya langsung muncul dengan suku bunga tetap 11,5% per tahun.</p>
+    <p class="sec-sub">Pilih jenis kredit, isi plafon dan jangka waktu. Suku bunga awalnya 11,5% per tahun dan bisa diubah sesuai penawaran bank.</p>
   </header>
   <div class="calc">
     <div class="tabs" role="tablist" aria-label="Jenis kredit" id="tablist">
@@ -514,9 +512,9 @@ footer{border-top:1px solid var(--rule)}
         <div class="fld" id="fPakai"><label for="pakai">Rata-rata pemakaian per bulan</label><div class="inp"><em>Rp</em><input id="pakai" inputmode="numeric" autocomplete="off" aria-describedby="hintPakai"></div><p class="hint" id="hintPakai">Maksimal sama dengan plafon.</p><p class="err" id="errPakai" hidden>Pemakaian melebihi plafon. Isi angka yang sama atau lebih kecil dari plafon.</p></div>
         <div class="fld"><label for="n">Jangka waktu</label><div class="inp"><input id="n" inputmode="numeric" autocomplete="off"><em>bulan</em></div></div>
         <div class="fld" id="fMethod"><span class="lb" id="lbM">Metode bunga</span><div class="seg" role="group" aria-labelledby="lbM" aria-describedby="hintM"><button type="button" data-m="flat" aria-pressed="false">Flat</button><button type="button" data-m="sliding" aria-pressed="true">Sliding</button></div><p class="hint" id="hintM"></p></div>
-        <div class="fld" id="fBasis"><span class="lb" id="lbB">Basis hari per tahun</span><div class="seg" role="group" aria-labelledby="lbB" aria-describedby="hintB"><button type="button" data-b="360" aria-pressed="true">360 hari</button><button type="button" data-b="365" aria-pressed="false">365 hari</button></div><p class="hint" id="hintB">Bunga per bulan = pemakaian × 11,5% × jumlah hari bulan itu ÷ basis hari.</p></div>
+        <div class="fld" id="fBasis"><span class="lb" id="lbB">Basis hari per tahun</span><div class="seg" role="group" aria-labelledby="lbB" aria-describedby="hintB"><button type="button" data-b="360" aria-pressed="true">360 hari</button><button type="button" data-b="365" aria-pressed="false">365 hari</button></div><p class="hint" id="hintB">Bunga per bulan = pemakaian × suku bunga × jumlah hari bulan itu ÷ basis hari.</p></div>
         <fieldset class="fld"><legend>Mulai bulan</legend><div class="dual"><div><label for="startM">Bulan</label><select id="startM"></select></div><div><label for="startY">Tahun</label><select id="startY"></select></div></div></fieldset>
-        <div class="fld"><span class="lb">Suku bunga per tahun</span><div class="lock">11,5%<em>tetap untuk semua kredit</em></div></div>
+        <div class="fld"><label for="rate">Suku bunga per tahun</label><div class="inp"><input id="rate" inputmode="decimal" autocomplete="off" aria-describedby="hintRate"><em>% per tahun</em></div><p class="hint" id="hintRate">Isi sesuai penawaran bank, misalnya 11,5.</p><p class="err" id="errRate" hidden>Suku bunga harus lebih dari 0 dan paling tinggi 50% per tahun.</p></div>
       </form>
       <div class="res" id="res"></div>
     </div>
@@ -537,9 +535,11 @@ var $=function(s,r){return (r||document).querySelector(s)}, $$=function(s,r){ret
 var mq=window.matchMedia?window.matchMedia("(prefers-reduced-motion: reduce)"):null;
 function reduced(){return !!(mq&&mq.matches)}
 var now=new Date(), ym=now.getFullYear()+"-"+String(now.getMonth()+1).padStart(2,"0");
-var S={rc:{plafon:500e6,pakai:300e6,n:12,basis:360,start:ym},
-       ki:{plafon:500e6,n:60,method:"sliding",start:ym},
-       af:{plafon:200e6,n:12,method:"sliding",start:ym}};
+/* rate = suku bunga per tahun dalam persen; awalnya 11,5 dan bisa diubah per jenis kredit */
+var S={rc:{plafon:500e6,pakai:300e6,n:12,basis:360,start:ym,rate:11.5},
+       ki:{plafon:500e6,n:60,method:"sliding",start:ym,rate:11.5},
+       af:{plafon:200e6,n:12,method:"sliding",start:ym,rate:11.5}};
+function pctTxt(x){return String(Math.round(x*1000)/1000).replace(".",",")+"%"}
 var NAME={rc:"KMK RC",ki:"Kredit Investasi",af:"KMK Aflopend"};
 var TABS=["rc","ki","af"];
 var HEAD_LOAN=["Angs Ke","Bulan","Saldo Pokok","Angs Pokok","Bunga","Total Angs","Saldo Akhir"];
@@ -550,13 +550,15 @@ var rpS=function(x){return "Rp "+rp(x)};
 function pct(x){return x.toFixed(1).replace(".",",")+"%"}
 
 /* ---------- Rumus (mengikuti tabel angsuran bank) ----------
-   Flat   : angsuran sama tiap bulan (anuitas). Bunga = sisa pokok × 11,5% / 12,
+   Suku bunga tahunan (awal 11,5%) bisa diubah di kalkulator; rate di bawah dalam bentuk desimal.
+   Flat   : angsuran sama tiap bulan (anuitas). Bunga = sisa pokok × suku bunga / 12,
             pokok = angsuran − bunga, jadi porsi pokok naik tiap bulan.
-   Sliding: pokok = plafon / n (sama tiap bulan), bunga = sisa pokok × 11,5% / 12,
+   Sliding: pokok = plafon / n (sama tiap bulan), bunga = sisa pokok × suku bunga / 12,
             jadi angsuran turun tiap bulan. */
 function mlabel(start,k){var p=start.split("-"),y=+p[0],m=+p[1]-1+k;y+=Math.floor(m/12);m=((m%12)+12)%12;return {t:MON[m]+" "+y,days:new Date(y,m+1,0).getDate()}}
-function loanRows(P,n,method,start){
-  var r=RATE/12,rows=[],bal=P,pk,bg,tot;
+function loanRows(P,n,method,start,rate){
+  if(rate==null)rate=RATE;
+  var r=rate/12,rows=[],bal=P,pk,bg,tot;
   var pmt=P*r/(1-Math.pow(1+r,-n));
   for(var k=0;k<n;k++){
     bg=bal*r;pk=method==="flat"?pmt-bg:P/n;
@@ -565,8 +567,9 @@ function loanRows(P,n,method,start){
   }
   return rows;
 }
-function rcRows(use,n,basis,start){
-  var rows=[];for(var k=0;k<n;k++){var d=mlabel(start,k);rows.push({k:k+1,bln:d.t,days:d.days,use:use,bg:use*RATE*d.days/basis});}
+function rcRows(use,n,basis,start,rate){
+  if(rate==null)rate=RATE;
+  var rows=[];for(var k=0;k<n;k++){var d=mlabel(start,k);rows.push({k:k+1,bln:d.t,days:d.days,use:use,bg:use*rate*d.days/basis});}
   return rows;
 }
 function sum(a,f){return a.reduce(function(s,x){return s+x[f]},0)}
@@ -610,6 +613,13 @@ function bindMoney(el,set){
     render();
   });
 }
+/* suku bunga: terima koma atau titik sebagai desimal, maksimal 3 angka di belakang koma */
+$("#rate").addEventListener("input",function(){
+  var v=this.value.replace(/\./g,",").replace(/[^\d,]/g,""),i=v.indexOf(",");
+  if(i>=0)v=v.slice(0,i+1)+v.slice(i+1).replace(/,/g,"").slice(0,3);
+  v=v.slice(0,7);this.value=v;
+  var x=parseFloat(v.replace(",","."));S[tab].rate=isFinite(x)?x:0;render();
+});
 function fillSelects(){
   var m=$("#startM"),y=$("#startY"),y0=now.getFullYear();
   m.innerHTML=MON_FULL.map(function(t,i){return '<option value="'+String(i+1).padStart(2,"0")+'">'+t+"</option>"}).join("");
@@ -621,6 +631,7 @@ function syncForm(){
   var s=S[tab],idx=TABS.indexOf(tab);
   $("#plafon").value=s.plafon?s.plafon.toLocaleString("id-ID"):"";
   $("#n").value=s.n||"";
+  $("#rate").value=s.rate?String(s.rate).replace(".",","):"";
   var p=s.start.split("-");$("#startY").value=p[0];$("#startM").value=p[1];
   $("#fPakai").hidden=$("#fBasis").hidden=tab!=="rc";
   $("#fMethod").hidden=tab==="rc";
@@ -669,7 +680,7 @@ function matrix(){
   var d=last,s=S[tab],isRC=d.type==="rc",head,body;
   if(isRC){head=HEAD_RC;body=d.rows.map(function(r){return [r.k,r.bln,r.days,Math.round(r.use),Math.round(r.bg)]});body.push(["Total","","","",Math.round(sum(d.rows,"bg"))]);}
   else{head=HEAD_LOAN;body=d.rows.map(function(r){return [r.k,r.bln,Math.round(r.open),Math.round(r.pk),Math.round(r.bg),Math.round(r.tot),Math.round(r.close)]});body.push(["Total","","",Math.round(sum(d.rows,"pk")),"","",""]);}
-  var info=[["Simulasi",NAME[tab]],["Plafon",Math.round(s.plafon)],["Jangka waktu (bulan)",s.n],["Suku bunga per tahun","11,5%"]];
+  var info=[["Simulasi",NAME[tab]],["Plafon",Math.round(s.plafon)],["Jangka waktu (bulan)",s.n],["Suku bunga per tahun",pctTxt(s.rate)]];
   if(isRC){info.push(["Pemakaian per bulan",Math.round(s.pakai)]);info.push(["Basis hari",s.basis]);}
   else info.push(["Metode",s.method==="flat"?"Flat":"Sliding"]);
   info.push(["Mulai",d.rows[0].bln]);info.push(["Keterangan","Simulasi bersifat indikatif"]);
@@ -691,9 +702,19 @@ function render(){
   if(over){pk.setAttribute("aria-invalid","true");pk.setAttribute("aria-describedby","errPakai");box.setAttribute("data-invalid","")}
   else{pk.removeAttribute("aria-invalid");pk.setAttribute("aria-describedby","hintPakai");box.removeAttribute("data-invalid")}
   $("#hintPakai").hidden=over;
+  /* validasi suku bunga: kosong atau 0 minta diisi; di atas 50% dianggap salah ketik */
+  var rateBad=s.rate>50,ri=$("#rate"),rbox=ri.closest(".inp");
+  $("#errRate").hidden=!rateBad;$("#hintRate").hidden=rateBad;
+  if(rateBad){ri.setAttribute("aria-invalid","true");ri.setAttribute("aria-describedby","errRate");rbox.setAttribute("data-invalid","")}
+  else{ri.removeAttribute("aria-invalid");ri.setAttribute("aria-describedby","hintRate");rbox.removeAttribute("data-invalid")}
   var msg=!s.plafon?"Isi plafon kredit untuk melihat hasil."
     :isRC&&!s.pakai?"Isi rata-rata pemakaian per bulan untuk melihat bunga."
-    :!s.n?"Isi jangka waktu dalam bulan untuk melihat hasil.":null;
+    :!s.n?"Isi jangka waktu dalam bulan untuk melihat hasil."
+    :!(s.rate>0)?"Isi suku bunga per tahun untuk melihat hasil, misalnya 11,5.":null;
+  if(rateBad){
+    sumEl.innerHTML='<div class="state bad"><b>Hasil belum dihitung.</b> Suku bunga '+pctTxt(s.rate)+' per tahun terlalu tinggi. Isi angka di atas 0 sampai 50.</div>';
+    res.innerHTML="";announce("Suku bunga terlalu tinggi. Hasil belum dihitung.");return;
+  }
   if(over){
     sumEl.innerHTML='<div class="state bad"><b>Hasil belum dihitung.</b> Rata-rata pemakaian '+rpS(s.pakai)+' lebih besar dari plafon '+rpS(s.plafon)+'. Turunkan pemakaian atau naikkan plafon.</div>';
     res.innerHTML="";announce("Pemakaian melebihi plafon. Hasil belum dihitung.");return;
@@ -701,7 +722,7 @@ function render(){
   if(msg){sumEl.innerHTML='<div class="state">'+msg+"</div>";res.innerHTML="";announce(msg);return}
   var html,rows,tb;
   if(isRC){
-    rows=rcRows(s.pakai,s.n,s.basis,s.start);tb=sum(rows,"bg");
+    rows=rcRows(s.pakai,s.n,s.basis,s.start,s.rate/100);tb=sum(rows,"bg");
     var avg=tb/rows.length,ut=s.pakai/s.plafon*100;last={type:"rc",rows:rows};
     sumEl.innerHTML=kpis(["Bunga per bulan (rata-rata)",rpS(avg)],["Total bunga "+s.n+" bulan",rpS(tb)],["Pemakaian plafon",pct(ut)]);
     html='<div class="legend"><span><i style="background:#1B8A8F"></i>Terpakai '+rpS(s.pakai)+'</span><span><i style="background:#F2A33A"></i>Sisa plafon '+rpS(s.plafon-s.pakai)+'</span></div>'
@@ -709,7 +730,7 @@ function render(){
      +'<p class="note">Pokok pinjaman tidak dicicil bulanan. Selama pemakaian tetap, yang dibayar tiap bulan hanya bunga, lalu pokok dilunasi atau plafon diperpanjang saat jatuh tempo. Simulasi bersifat indikatif.</p>';
     announce("Bunga per bulan rata-rata "+rpS(avg)+". Total bunga "+rpS(tb)+".");
   }else{
-    rows=loanRows(s.plafon,s.n,s.method,s.start);tb=sum(rows,"bg");
+    rows=loanRows(s.plafon,s.n,s.method,s.start,s.rate/100);tb=sum(rows,"bg");
     var tt=sum(rows,"tot"),first=rows[0].tot,lastTot=rows[rows.length-1].tot,flat=s.method==="flat";last={type:tab,rows:rows};
     sumEl.innerHTML=kpis([flat?"Angsuran per bulan":"Angsuran bulan pertama",rpS(first)],["Total bunga",rpS(tb)],["Total pembayaran",rpS(tt)]);
     html='<div class="legend"><span><i style="background:#1B8A8F"></i>Pokok</span><span><i style="background:#F2A33A"></i>Bunga</span><span>Per bulan sampai lunas ('+s.n+' bulan)</span></div>'
