@@ -539,7 +539,7 @@ footer{border-top:1px solid var(--rule)}
         <details class="acc" id="aPlafon"><summary><span class="acc-l">Plafon kredit</span><span class="acc-v" id="vPlafon"></span></summary>
           <div class="acc-b"><label class="sr-only" for="plafon">Plafon kredit</label><div class="inp"><em>Rp</em><input id="plafon" inputmode="numeric" autocomplete="off"></div></div></details>
         <details class="acc" id="fMaks"><summary><span class="acc-l">Maksimum kredit</span><span class="acc-v" id="vMaks"></span></summary>
-          <div class="acc-b"><label class="sr-only" for="maks">Maksimum kredit</label><div class="inp"><em>Rp</em><input id="maks" inputmode="numeric" autocomplete="off" aria-describedby="hintMaks"></div><p class="hint" id="hintMaks">Dasar hitung provisi.</p></div></details>
+          <div class="acc-b"><label class="sr-only" for="maks">Maksimum kredit</label><div class="inp"><em>Rp</em><input id="maks" inputmode="numeric" autocomplete="off" aria-describedby="hintMaks"></div><p class="hint" id="hintMaks">Dasar hitung provisi dan blokir DSPA/DSRA.</p></div></details>
         <details class="acc" id="fPakai"><summary><span class="acc-l">Rata-rata pemakaian per bulan</span><span class="acc-v" id="vPakai"></span></summary>
           <div class="acc-b"><label class="sr-only" for="pakai">Rata-rata pemakaian per bulan</label><div class="inp"><em>Rp</em><input id="pakai" inputmode="numeric" autocomplete="off" aria-describedby="hintPakai"></div><p class="hint" id="hintPakai">Maksimal sama dengan plafon.</p><p class="err" id="errPakai" hidden>Pemakaian melebihi plafon. Isi angka yang sama atau lebih kecil dari plafon.</p></div></details>
         <details class="acc" id="aN"><summary><span class="acc-l">Jangka waktu</span><span class="acc-v" id="vN"></span></summary>
@@ -590,7 +590,8 @@ var S={rc:{plafon:500e6,pakai:300e6,n:12,basis:360,start:ym,rate:11.5},
        ki:{plafon:500e6,n:60,method:"sliding",start:ym,rate:11.5},
        af:{plafon:200e6,n:12,method:"sliding",start:ym,rate:11.5},
        /* contoh awal biaya: plafon 2,2 M, maksimum 2,5 M, 120 bulan, flat */
-       biaya:{plafon:2200e6,maks:2500e6,n:120,method:"flat",start:ym,rate:11.5,prov:1,blok:2,admin:1e6,asur:30e6,notaris:10e6,kAdmin:"",kAsur:"Masih perkiraan",kNot:"Masih perkiraan"}};
+       /* tab Biaya hanya memakai maksimum kredit; plafon disamakan dengan maksimum */
+       biaya:{plafon:2500e6,maks:2500e6,n:120,method:"flat",start:ym,rate:11.5,prov:1,blok:2,admin:1e6,asur:30e6,notaris:10e6,kAdmin:"",kAsur:"Masih perkiraan",kNot:"Masih perkiraan"}};
 function pctTxt(x){return String(Math.round(x*1000)/1000).replace(".",",")+"%"}
 var NAME={rc:"KMK RC",ki:"Kredit Investasi",af:"KMK Aflopend",biaya:"Biaya pengajuan kredit"};
 var TABS=["rc","ki","af","biaya"];
@@ -689,7 +690,7 @@ function syncForm(){
   var p=s.start.split("-");$("#startY").value=p[0];$("#startM").value=p[1];
   $("#fPakai").hidden=$("#fBasis").hidden=tab!=="rc";
   $("#fMethod").hidden=tab==="rc";
-  $("#fMaks").hidden=$("#fBiaya").hidden=tab!=="biaya";$("#fStart").hidden=tab==="biaya";
+  $("#fMaks").hidden=$("#fBiaya").hidden=tab!=="biaya";$("#fStart").hidden=$("#aPlafon").hidden=tab==="biaya";
   if(tab==="biaya"){
     $("#maks").value=s.maks?s.maks.toLocaleString("id-ID"):"";
     $("#prov").value=String(s.prov).replace(".",",");$("#blok").value=s.blok;
@@ -716,7 +717,7 @@ function pulse(){
 }
 bindMoney($("#plafon"),function(v){S[tab].plafon=v});
 bindMoney($("#pakai"),function(v){S.rc.pakai=v});
-bindMoney($("#maks"),function(v){S.biaya.maks=v});
+bindMoney($("#maks"),function(v){S.biaya.maks=v;S.biaya.plafon=v});
 ["admin","asur","notaris"].forEach(function(k){bindMoney($("#"+k),function(v){S.biaya[k]=v})});
 [["kAdmin","kAdmin"],["kAsur","kAsur"],["kNot","kNot"]].forEach(function(p){$("#"+p[0]).addEventListener("input",function(){S.biaya[p[1]]=this.value;render()})});
 $("#prov").addEventListener("input",function(){
@@ -751,7 +752,7 @@ function matrix(){
   var d=last,s=S[tab],isRC=d.type==="rc",head,body;
   if(d.type==="biaya"){
     body=d.rows.map(function(r){return [r.nama,Math.round(r.nom),r.ket]});body.push(["Total Biaya",Math.round(sum(d.rows,"nom")),""]);
-    var bi=[["Simulasi",NAME.biaya],["Plafon",Math.round(s.plafon)],["Maksimum kredit",Math.round(s.maks)],["Jangka waktu (bulan)",s.n],
+    var bi=[["Simulasi",NAME.biaya],["Maksimum kredit",Math.round(s.maks)],["Jangka waktu (bulan)",s.n],
       ["Suku bunga per tahun",pctTxt(s.rate)],["Metode",s.method==="flat"?"Flat":"Sliding"],["Keterangan","Simulasi bersifat indikatif"]];
     return {head:HEAD_BIAYA,body:body,info:bi,aoa:bi.concat([[]],[HEAD_BIAYA],body)};
   }
@@ -805,7 +806,8 @@ function render(){
   var ar=$("#aRate");ar.classList.toggle("bad",rateBad);if(rateBad)ar.open=true;
   if(rateBad){ri.setAttribute("aria-invalid","true");ri.setAttribute("aria-describedby","errRate");rbox.setAttribute("data-invalid","")}
   else{ri.removeAttribute("aria-invalid");ri.setAttribute("aria-describedby","hintRate");rbox.removeAttribute("data-invalid")}
-  var msg=!s.plafon?"Isi plafon kredit untuk melihat hasil."
+  var msg=tab==="biaya"&&!s.maks?"Isi maksimum kredit untuk menghitung biaya."
+    :!s.plafon?"Isi plafon kredit untuk melihat hasil."
     :isRC&&!s.pakai?"Isi rata-rata pemakaian per bulan untuk melihat bunga."
     :!s.n?"Isi jangka waktu dalam bulan untuk melihat hasil."
     :!(s.rate>0)?"Isi suku bunga per tahun untuk melihat hasil, misalnya 11,5."
@@ -822,7 +824,7 @@ function render(){
   var html,rows,tb;
   if(tab==="biaya"){
     /* DSPA/DSRA = n × angsuran pokok + bunga bulan pertama (dibulatkan dulu, seperti tabel bank) */
-    var lr=loanRows(s.plafon,s.n,s.method,s.start,s.rate/100),aw=Math.round(lr[0].tot),mt=s.method==="flat"?"flat":"sliding";
+    var lr=loanRows(s.maks,s.n,s.method,s.start,s.rate/100),aw=Math.round(lr[0].tot),mt=s.method==="flat"?"flat":"sliding";
     var items=[
       {nama:"Blokir DSPA DSRA",nom:s.blok*aw,ket:s.blok+"x pokok + bunga di awal ("+mt+", "+rpS(aw)+" per bulan)"},
       {nama:"Provisi",nom:Math.round(s.maks*s.prov/100),ket:pctTxt(s.prov)+" dari maksimum "+rpS(s.maks)},
