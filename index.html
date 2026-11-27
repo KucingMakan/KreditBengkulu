@@ -179,8 +179,22 @@ a[href],button,select,label,input[type=checkbox]{cursor:pointer}
 .tabs button[aria-selected=true]{background:var(--sheet);color:var(--navy);font-weight:700;min-height:54px;z-index:2;margin-bottom:-1px;box-shadow:inset 0 3px 0 var(--cap)}
 @media(hover:hover){.tabs button[aria-selected=false]:hover{background:#EDF2EC;color:var(--navy)}}
 .short{display:none}
-.cbody{position:relative;z-index:1;display:grid;grid-template-columns:352px minmax(0,1fr);grid-template-areas:"form sum" "form res";background:var(--sheet);border:1px solid var(--rule);border-radius:0 8px 8px 8px;box-shadow:var(--paper-shadow)}
-.form{grid-area:form;padding:32px;border-right:1px solid var(--rule);display:grid;gap:24px;align-content:start}
+.cbody{position:relative;z-index:1;display:grid;grid-template-columns:352px minmax(0,1fr);grid-template-areas:"form sum" "form res";grid-template-rows:auto 1fr;background:var(--sheet);border:1px solid var(--rule);border-radius:0 8px 8px 8px;box-shadow:var(--paper-shadow)}
+.form{grid-area:form;padding:16px 24px 24px;border-right:1px solid var(--rule);display:grid;gap:0;align-content:start}
+/* baris isian buka-tutup */
+.acc{border-bottom:1px solid var(--rule)}
+.acc[hidden]{display:none}
+.acc>summary{list-style:none;display:flex;align-items:center;gap:12px;min-height:56px;padding:10px 8px;margin:0 -8px;border-radius:6px;cursor:pointer;transition:background-color 150ms ease}
+.acc>summary::-webkit-details-marker{display:none}
+.acc>summary::after{content:"";flex:none;width:8px;height:8px;margin:0 4px 4px 2px;border-right:2px solid var(--mute);border-bottom:2px solid var(--mute);transform:rotate(45deg);transition:transform 180ms var(--ease-out)}
+.acc[open]>summary::after{transform:translateY(4px) rotate(-135deg)}
+@media(hover:hover){.acc>summary:hover{background:#F2F6F1}}
+.acc-l{font-weight:600;font-size:15px;color:var(--ink);min-width:0}
+.acc-v{margin-left:auto;font-weight:600;font-size:15px;color:var(--navy);font-variant-numeric:tabular-nums;text-align:right;white-space:nowrap}
+.acc.bad .acc-v{color:var(--err)}
+.acc-b{padding:4px 0 20px}
+@media(prefers-reduced-motion:no-preference){.acc[open]>.acc-b{animation:accIn 180ms var(--ease-out)}}
+@keyframes accIn{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}
 .sum{grid-area:sum;padding:32px 32px 0;min-width:0}
 .res{grid-area:res;padding:24px 32px 32px;min-width:0}
 .fld>label,.lb,legend{display:block;font-size:15px;font-weight:600;color:var(--ink);margin-bottom:8px;padding:0}
@@ -198,8 +212,8 @@ fieldset{border:0;min-width:0}
 .seg button[aria-pressed=true]{background:var(--teal-ink);color:#fff}
 @media(hover:hover){.seg button[aria-pressed=false]:hover{background:#EDF2EC;color:var(--navy)}}
 .dual{display:grid;grid-template-columns:1.3fr 1fr;gap:12px}
-.fgrp{display:grid;gap:24px}.fgrp[hidden]{display:none}
-.dual2{display:grid;grid-template-columns:1fr;gap:8px}
+.fgrp{display:grid;gap:0}.fgrp[hidden]{display:none}
+.dual2{display:grid;grid-template-columns:1fr;gap:12px}
 .dual2 label{font-size:14px;color:var(--mute);font-weight:500;display:block;margin-bottom:4px}
 .dual2 .inp input{font-size:16px}
 .dual2 input[type=text]{font-weight:500}
@@ -207,7 +221,8 @@ fieldset{border:0;min-width:0}
 table.angs.biaya{min-width:560px}
 .angs.biaya th:first-child,.angs.biaya td:first-child{text-align:left;width:auto}
 .angs.biaya th:nth-child(2),.angs.biaya td:nth-child(2){text-align:right}
-.angs.biaya th:nth-child(3),.angs.biaya td:nth-child(3){text-align:left;white-space:normal;color:var(--mute)}
+.angs.biaya th:nth-child(3),.angs.biaya td:nth-child(3){text-align:left;white-space:normal}
+.angs.biaya td:nth-child(3){color:var(--mute)}
 .angs.biaya tfoot td:nth-child(2){text-align:right}
 .dual label{font-size:14px;color:var(--mute);font-weight:500;display:block;margin-bottom:4px}
 select{appearance:none;-webkit-appearance:none;width:100%;min-height:52px;border:1.5px solid var(--line-strong);border-radius:6px;padding:0 38px 0 14px;font-weight:600;font-size:16px;background:var(--sheet) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5l5 5 5-5' fill='none' stroke='%230E2A47' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") no-repeat right 14px center/12px 8px}
@@ -275,7 +290,7 @@ footer{border-top:1px solid var(--rule)}
   .prod.flip .prod-fig{order:0}
   .berkas{grid-template-columns:1fr;grid-template-areas:"intro" "folder" "act";padding-top:40px}
   .folder{margin-top:64px}
-  .cbody{grid-template-columns:1fr;grid-template-areas:"sum" "form" "res"}
+  .cbody{grid-template-columns:1fr;grid-template-areas:"sum" "form" "res";grid-template-rows:auto}
   .form{border-right:0;border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);margin-top:24px}
   .sum{padding:24px 24px 0}.res{padding:24px}
 }
@@ -302,7 +317,7 @@ footer{border-top:1px solid var(--rule)}
   .tabs button{flex:1;padding:0 6px;font-size:15px}
   .long{display:none}.short{display:inline}
   .cbody{border-radius:0 0 8px 8px}
-  .form{padding:24px 16px}.sum{padding:16px 16px 0}.res{padding:20px 16px 24px}
+  .form{padding:8px 16px 16px}.sum{padding:16px 16px 0}.res{padding:20px 16px 24px}
   .kpis{grid-template-columns:1fr;gap:0}
   .kpi:not(.hi){display:flex;justify-content:space-between;align-items:baseline;gap:12px}
   .kpi b{font-size:20px;margin:0}
@@ -520,21 +535,35 @@ footer{border-top:1px solid var(--rule)}
     <div class="cbody" id="calcPanel" role="tabpanel" aria-labelledby="tab-ki">
       <div class="sum" id="sum"></div>
       <form class="form" id="form" novalidate>
-        <div class="fld"><label for="plafon">Plafon kredit</label><div class="inp"><em>Rp</em><input id="plafon" inputmode="numeric" autocomplete="off"></div></div>
-        <div class="fld" id="fMaks"><label for="maks">Maksimum kredit</label><div class="inp"><em>Rp</em><input id="maks" inputmode="numeric" autocomplete="off" aria-describedby="hintMaks"></div><p class="hint" id="hintMaks">Dasar hitung provisi.</p></div>
-        <div class="fld" id="fPakai"><label for="pakai">Rata-rata pemakaian per bulan</label><div class="inp"><em>Rp</em><input id="pakai" inputmode="numeric" autocomplete="off" aria-describedby="hintPakai"></div><p class="hint" id="hintPakai">Maksimal sama dengan plafon.</p><p class="err" id="errPakai" hidden>Pemakaian melebihi plafon. Isi angka yang sama atau lebih kecil dari plafon.</p></div>
-        <div class="fld"><label for="n">Jangka waktu</label><div class="inp"><input id="n" inputmode="numeric" autocomplete="off"><em>bulan</em></div></div>
-        <div class="fld" id="fMethod"><span class="lb" id="lbM">Metode bunga</span><div class="seg" role="group" aria-labelledby="lbM" aria-describedby="hintM"><button type="button" data-m="flat" aria-pressed="false">Flat</button><button type="button" data-m="sliding" aria-pressed="true">Sliding</button></div><p class="hint" id="hintM"></p></div>
-        <div class="fld" id="fBasis"><span class="lb" id="lbB">Basis hari per tahun</span><div class="seg" role="group" aria-labelledby="lbB" aria-describedby="hintB"><button type="button" data-b="360" aria-pressed="true">360 hari</button><button type="button" data-b="365" aria-pressed="false">365 hari</button></div><p class="hint" id="hintB">Bunga per bulan = pemakaian × suku bunga × jumlah hari bulan itu ÷ basis hari.</p></div>
-        <fieldset class="fld" id="fStart"><legend>Mulai bulan</legend><div class="dual"><div><label for="startM">Bulan</label><select id="startM"></select></div><div><label for="startY">Tahun</label><select id="startY"></select></div></div></fieldset>
-        <div class="fld"><label for="rate">Suku bunga per tahun</label><div class="inp"><input id="rate" inputmode="decimal" autocomplete="off" aria-describedby="hintRate"><em>% per tahun</em></div><p class="hint" id="hintRate">Isi sesuai penawaran bank, misalnya 11,5.</p><p class="err" id="errRate" hidden>Suku bunga harus lebih dari 0 dan paling tinggi 50% per tahun.</p></div>
+        <!-- Tiap isian berupa baris buka-tutup: tertutup menampilkan nama dan nilainya, diklik baru terbuka -->
+        <details class="acc" id="aPlafon"><summary><span class="acc-l">Plafon kredit</span><span class="acc-v" id="vPlafon"></span></summary>
+          <div class="acc-b"><label class="sr-only" for="plafon">Plafon kredit</label><div class="inp"><em>Rp</em><input id="plafon" inputmode="numeric" autocomplete="off"></div></div></details>
+        <details class="acc" id="fMaks"><summary><span class="acc-l">Maksimum kredit</span><span class="acc-v" id="vMaks"></span></summary>
+          <div class="acc-b"><label class="sr-only" for="maks">Maksimum kredit</label><div class="inp"><em>Rp</em><input id="maks" inputmode="numeric" autocomplete="off" aria-describedby="hintMaks"></div><p class="hint" id="hintMaks">Dasar hitung provisi.</p></div></details>
+        <details class="acc" id="fPakai"><summary><span class="acc-l">Rata-rata pemakaian per bulan</span><span class="acc-v" id="vPakai"></span></summary>
+          <div class="acc-b"><label class="sr-only" for="pakai">Rata-rata pemakaian per bulan</label><div class="inp"><em>Rp</em><input id="pakai" inputmode="numeric" autocomplete="off" aria-describedby="hintPakai"></div><p class="hint" id="hintPakai">Maksimal sama dengan plafon.</p><p class="err" id="errPakai" hidden>Pemakaian melebihi plafon. Isi angka yang sama atau lebih kecil dari plafon.</p></div></details>
+        <details class="acc" id="aN"><summary><span class="acc-l">Jangka waktu</span><span class="acc-v" id="vN"></span></summary>
+          <div class="acc-b"><label class="sr-only" for="n">Jangka waktu</label><div class="inp"><input id="n" inputmode="numeric" autocomplete="off"><em>bulan</em></div></div></details>
+        <details class="acc" id="fMethod"><summary><span class="acc-l" id="lbM">Metode bunga</span><span class="acc-v" id="vMethod"></span></summary>
+          <div class="acc-b"><div class="seg" role="group" aria-labelledby="lbM" aria-describedby="hintM"><button type="button" data-m="flat" aria-pressed="false">Flat</button><button type="button" data-m="sliding" aria-pressed="true">Sliding</button></div><p class="hint" id="hintM"></p></div></details>
+        <details class="acc" id="fBasis"><summary><span class="acc-l" id="lbB">Basis hari per tahun</span><span class="acc-v" id="vBasis"></span></summary>
+          <div class="acc-b"><div class="seg" role="group" aria-labelledby="lbB" aria-describedby="hintB"><button type="button" data-b="360" aria-pressed="true">360 hari</button><button type="button" data-b="365" aria-pressed="false">365 hari</button></div><p class="hint" id="hintB">Bunga per bulan = pemakaian × suku bunga × jumlah hari bulan itu ÷ basis hari.</p></div></details>
+        <details class="acc" id="fStart"><summary><span class="acc-l">Mulai bulan</span><span class="acc-v" id="vStart"></span></summary>
+          <div class="acc-b"><div class="dual"><div><label for="startM">Bulan</label><select id="startM"></select></div><div><label for="startY">Tahun</label><select id="startY"></select></div></div></div></details>
+        <details class="acc" id="aRate"><summary><span class="acc-l">Suku bunga per tahun</span><span class="acc-v" id="vRate"></span></summary>
+          <div class="acc-b"><label class="sr-only" for="rate">Suku bunga per tahun</label><div class="inp"><input id="rate" inputmode="decimal" autocomplete="off" aria-describedby="hintRate"><em>% per tahun</em></div><p class="hint" id="hintRate">Isi sesuai penawaran bank, misalnya 11,5.</p><p class="err" id="errRate" hidden>Suku bunga harus lebih dari 0 dan paling tinggi 50% per tahun.</p></div></details>
         <!-- Isian khusus tab Biaya -->
         <div id="fBiaya" class="fgrp">
-          <div class="fld"><label for="prov">Provisi</label><div class="inp"><input id="prov" inputmode="decimal" autocomplete="off" aria-describedby="hintProv"><em>% dari maksimum</em></div><p class="hint" id="hintProv">Biasanya 1% dari maksimum kredit.</p></div>
-          <div class="fld"><label for="blok">Blokir DSPA/DSRA</label><div class="inp"><input id="blok" inputmode="numeric" autocomplete="off" aria-describedby="hintBlok"><em>× angsuran awal</em></div><p class="hint" id="hintBlok">Jumlah angsuran pokok + bunga bulan pertama yang diblokir, mengikuti metode flat atau sliding di atas.</p></div>
-          <fieldset class="fld"><legend>Admin</legend><div class="dual2"><div><label for="admin">Nominal</label><div class="inp"><em>Rp</em><input id="admin" inputmode="numeric" autocomplete="off"></div></div><div><label for="kAdmin">Keterangan</label><div class="inp"><input id="kAdmin" type="text" autocomplete="off" maxlength="60" placeholder="Opsional"></div></div></div></fieldset>
-          <fieldset class="fld"><legend>Asuransi</legend><div class="dual2"><div><label for="asur">Nominal</label><div class="inp"><em>Rp</em><input id="asur" inputmode="numeric" autocomplete="off"></div></div><div><label for="kAsur">Keterangan</label><div class="inp"><input id="kAsur" type="text" autocomplete="off" maxlength="60" placeholder="Opsional"></div></div></div></fieldset>
-          <fieldset class="fld"><legend>Notaris</legend><div class="dual2"><div><label for="notaris">Nominal</label><div class="inp"><em>Rp</em><input id="notaris" inputmode="numeric" autocomplete="off"></div></div><div><label for="kNot">Keterangan</label><div class="inp"><input id="kNot" type="text" autocomplete="off" maxlength="60" placeholder="Opsional"></div></div></div></fieldset>
+          <details class="acc"><summary><span class="acc-l">Provisi</span><span class="acc-v" id="vProv"></span></summary>
+            <div class="acc-b"><label class="sr-only" for="prov">Provisi</label><div class="inp"><input id="prov" inputmode="decimal" autocomplete="off" aria-describedby="hintProv"><em>% dari maksimum</em></div><p class="hint" id="hintProv">Biasanya 1% dari maksimum kredit.</p></div></details>
+          <details class="acc"><summary><span class="acc-l">Blokir DSPA/DSRA</span><span class="acc-v" id="vBlok"></span></summary>
+            <div class="acc-b"><label class="sr-only" for="blok">Blokir DSPA/DSRA</label><div class="inp"><input id="blok" inputmode="numeric" autocomplete="off" aria-describedby="hintBlok"><em>× angsuran awal</em></div><p class="hint" id="hintBlok">Jumlah angsuran pokok + bunga bulan pertama yang diblokir, mengikuti metode flat atau sliding.</p></div></details>
+          <details class="acc"><summary><span class="acc-l">Admin</span><span class="acc-v" id="vAdmin"></span></summary>
+            <div class="acc-b dual2"><div><label for="admin">Nominal</label><div class="inp"><em>Rp</em><input id="admin" inputmode="numeric" autocomplete="off"></div></div><div><label for="kAdmin">Keterangan</label><div class="inp"><input id="kAdmin" type="text" autocomplete="off" maxlength="60" placeholder="Opsional"></div></div></div></details>
+          <details class="acc"><summary><span class="acc-l">Asuransi</span><span class="acc-v" id="vAsur"></span></summary>
+            <div class="acc-b dual2"><div><label for="asur">Nominal</label><div class="inp"><em>Rp</em><input id="asur" inputmode="numeric" autocomplete="off"></div></div><div><label for="kAsur">Keterangan</label><div class="inp"><input id="kAsur" type="text" autocomplete="off" maxlength="60" placeholder="Opsional"></div></div></div></details>
+          <details class="acc"><summary><span class="acc-l">Notaris</span><span class="acc-v" id="vNot"></span></summary>
+            <div class="acc-b dual2"><div><label for="notaris">Nominal</label><div class="inp"><em>Rp</em><input id="notaris" inputmode="numeric" autocomplete="off"></div></div><div><label for="kNot">Keterangan</label><div class="inp"><input id="kNot" type="text" autocomplete="off" maxlength="60" placeholder="Opsional"></div></div></div></details>
         </div>
       </form>
       <div class="res" id="res"></div>
@@ -749,9 +778,23 @@ function tableHTML(){
              :'<tr><td colspan="3">Total</td><td>'+rp(tot[3])+'</td><td colspan="3"></td></tr>';
   return '<div class="scroll" tabindex="0" role="region" aria-label="Tabel '+(isRC?"bunga bulanan":"angsuran")+'"><table class="angs"><thead>'+h+"</thead><tbody>"+b+"</tbody><tfoot>"+f+"</tfoot></table></div>";
 }
+/* nilai ringkas yang tampil di baris isian saat tertutup */
+function setV(id,t){var e=$("#"+id);if(e)e.textContent=t}
+function previews(){
+  var s=S[tab],kosong="Belum diisi",p=s.start.split("-");
+  setV("vPlafon",s.plafon?rpS(s.plafon):kosong);setV("vN",s.n?s.n+" bulan":kosong);
+  setV("vRate",s.rate>0?pctTxt(s.rate):kosong);setV("vStart",MON_FULL[+p[1]-1]+" "+p[0]);
+  if(tab==="rc"){setV("vPakai",s.pakai?rpS(s.pakai):kosong);setV("vBasis",s.basis+" hari")}
+  else setV("vMethod",s.method==="flat"?"Flat":"Sliding");
+  if(tab==="biaya"){setV("vMaks",s.maks?rpS(s.maks):kosong);setV("vProv",pctTxt(s.prov));setV("vBlok",s.blok+"× angsuran awal");
+    setV("vAdmin",rpS(s.admin));setV("vAsur",rpS(s.asur));setV("vNot",rpS(s.notaris))}
+}
 function render(){
   var s=S[tab],isRC=tab==="rc",sumEl=$("#sum"),res=$("#res");last=null;
   var over=isRC&&s.pakai>s.plafon,pk=$("#pakai"),box=pk.closest(".inp");
+  previews();
+  /* isian yang salah dibuka otomatis dan nilainya ditandai merah */
+  var ap=$("#fPakai");ap.classList.toggle("bad",over);if(over)ap.open=true;
   $("#errPakai").hidden=!over;
   if(over){pk.setAttribute("aria-invalid","true");pk.setAttribute("aria-describedby","errPakai");box.setAttribute("data-invalid","")}
   else{pk.removeAttribute("aria-invalid");pk.setAttribute("aria-describedby","hintPakai");box.removeAttribute("data-invalid")}
@@ -759,6 +802,7 @@ function render(){
   /* validasi suku bunga: kosong atau 0 minta diisi; di atas 50% dianggap salah ketik */
   var rateBad=s.rate>50,ri=$("#rate"),rbox=ri.closest(".inp");
   $("#errRate").hidden=!rateBad;$("#hintRate").hidden=rateBad;
+  var ar=$("#aRate");ar.classList.toggle("bad",rateBad);if(rateBad)ar.open=true;
   if(rateBad){ri.setAttribute("aria-invalid","true");ri.setAttribute("aria-describedby","errRate");rbox.setAttribute("data-invalid","")}
   else{ri.removeAttribute("aria-invalid");ri.setAttribute("aria-describedby","hintRate");rbox.removeAttribute("data-invalid")}
   var msg=!s.plafon?"Isi plafon kredit untuk melihat hasil."
