@@ -198,6 +198,17 @@ fieldset{border:0;min-width:0}
 .seg button[aria-pressed=true]{background:var(--teal-ink);color:#fff}
 @media(hover:hover){.seg button[aria-pressed=false]:hover{background:#EDF2EC;color:var(--navy)}}
 .dual{display:grid;grid-template-columns:1.3fr 1fr;gap:12px}
+.fgrp{display:grid;gap:24px}.fgrp[hidden]{display:none}
+.dual2{display:grid;grid-template-columns:1fr;gap:8px}
+.dual2 label{font-size:14px;color:var(--mute);font-weight:500;display:block;margin-bottom:4px}
+.dual2 .inp input{font-size:16px}
+.dual2 input[type=text]{font-weight:500}
+/* tabel rincian biaya: kolom pertama nama biaya, bukan nomor */
+table.angs.biaya{min-width:560px}
+.angs.biaya th:first-child,.angs.biaya td:first-child{text-align:left;width:auto}
+.angs.biaya th:nth-child(2),.angs.biaya td:nth-child(2){text-align:right}
+.angs.biaya th:nth-child(3),.angs.biaya td:nth-child(3){text-align:left;white-space:normal;color:var(--mute)}
+.angs.biaya tfoot td:nth-child(2){text-align:right}
 .dual label{font-size:14px;color:var(--mute);font-weight:500;display:block;margin-bottom:4px}
 select{appearance:none;-webkit-appearance:none;width:100%;min-height:52px;border:1.5px solid var(--line-strong);border-radius:6px;padding:0 38px 0 14px;font-weight:600;font-size:16px;background:var(--sheet) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5l5 5 5-5' fill='none' stroke='%230E2A47' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") no-repeat right 14px center/12px 8px}
 .kpis{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px}
@@ -504,17 +515,27 @@ footer{border-top:1px solid var(--rule)}
       <button type="button" role="tab" id="tab-rc" data-tab="rc" aria-controls="calcPanel" aria-selected="false" tabindex="-1">KMK RC</button>
       <button type="button" role="tab" id="tab-ki" data-tab="ki" aria-controls="calcPanel" aria-selected="true"><span class="long">Kredit Investasi</span><span class="short">KI</span></button>
       <button type="button" role="tab" id="tab-af" data-tab="af" aria-controls="calcPanel" aria-selected="false" tabindex="-1"><span class="long">KMK Aflopend</span><span class="short">Aflopend</span></button>
+      <button type="button" role="tab" id="tab-biaya" data-tab="biaya" aria-controls="calcPanel" aria-selected="false" tabindex="-1">Biaya</button>
     </div>
     <div class="cbody" id="calcPanel" role="tabpanel" aria-labelledby="tab-ki">
       <div class="sum" id="sum"></div>
       <form class="form" id="form" novalidate>
         <div class="fld"><label for="plafon">Plafon kredit</label><div class="inp"><em>Rp</em><input id="plafon" inputmode="numeric" autocomplete="off"></div></div>
+        <div class="fld" id="fMaks"><label for="maks">Maksimum kredit</label><div class="inp"><em>Rp</em><input id="maks" inputmode="numeric" autocomplete="off" aria-describedby="hintMaks"></div><p class="hint" id="hintMaks">Dasar hitung provisi.</p></div>
         <div class="fld" id="fPakai"><label for="pakai">Rata-rata pemakaian per bulan</label><div class="inp"><em>Rp</em><input id="pakai" inputmode="numeric" autocomplete="off" aria-describedby="hintPakai"></div><p class="hint" id="hintPakai">Maksimal sama dengan plafon.</p><p class="err" id="errPakai" hidden>Pemakaian melebihi plafon. Isi angka yang sama atau lebih kecil dari plafon.</p></div>
         <div class="fld"><label for="n">Jangka waktu</label><div class="inp"><input id="n" inputmode="numeric" autocomplete="off"><em>bulan</em></div></div>
         <div class="fld" id="fMethod"><span class="lb" id="lbM">Metode bunga</span><div class="seg" role="group" aria-labelledby="lbM" aria-describedby="hintM"><button type="button" data-m="flat" aria-pressed="false">Flat</button><button type="button" data-m="sliding" aria-pressed="true">Sliding</button></div><p class="hint" id="hintM"></p></div>
         <div class="fld" id="fBasis"><span class="lb" id="lbB">Basis hari per tahun</span><div class="seg" role="group" aria-labelledby="lbB" aria-describedby="hintB"><button type="button" data-b="360" aria-pressed="true">360 hari</button><button type="button" data-b="365" aria-pressed="false">365 hari</button></div><p class="hint" id="hintB">Bunga per bulan = pemakaian × suku bunga × jumlah hari bulan itu ÷ basis hari.</p></div>
-        <fieldset class="fld"><legend>Mulai bulan</legend><div class="dual"><div><label for="startM">Bulan</label><select id="startM"></select></div><div><label for="startY">Tahun</label><select id="startY"></select></div></div></fieldset>
+        <fieldset class="fld" id="fStart"><legend>Mulai bulan</legend><div class="dual"><div><label for="startM">Bulan</label><select id="startM"></select></div><div><label for="startY">Tahun</label><select id="startY"></select></div></div></fieldset>
         <div class="fld"><label for="rate">Suku bunga per tahun</label><div class="inp"><input id="rate" inputmode="decimal" autocomplete="off" aria-describedby="hintRate"><em>% per tahun</em></div><p class="hint" id="hintRate">Isi sesuai penawaran bank, misalnya 11,5.</p><p class="err" id="errRate" hidden>Suku bunga harus lebih dari 0 dan paling tinggi 50% per tahun.</p></div>
+        <!-- Isian khusus tab Biaya -->
+        <div id="fBiaya" class="fgrp">
+          <div class="fld"><label for="prov">Provisi</label><div class="inp"><input id="prov" inputmode="decimal" autocomplete="off" aria-describedby="hintProv"><em>% dari maksimum</em></div><p class="hint" id="hintProv">Biasanya 1% dari maksimum kredit.</p></div>
+          <div class="fld"><label for="blok">Blokir DSPA/DSRA</label><div class="inp"><input id="blok" inputmode="numeric" autocomplete="off" aria-describedby="hintBlok"><em>× angsuran awal</em></div><p class="hint" id="hintBlok">Jumlah angsuran pokok + bunga bulan pertama yang diblokir, mengikuti metode flat atau sliding di atas.</p></div>
+          <fieldset class="fld"><legend>Admin</legend><div class="dual2"><div><label for="admin">Nominal</label><div class="inp"><em>Rp</em><input id="admin" inputmode="numeric" autocomplete="off"></div></div><div><label for="kAdmin">Keterangan</label><div class="inp"><input id="kAdmin" type="text" autocomplete="off" maxlength="60" placeholder="Opsional"></div></div></div></fieldset>
+          <fieldset class="fld"><legend>Asuransi</legend><div class="dual2"><div><label for="asur">Nominal</label><div class="inp"><em>Rp</em><input id="asur" inputmode="numeric" autocomplete="off"></div></div><div><label for="kAsur">Keterangan</label><div class="inp"><input id="kAsur" type="text" autocomplete="off" maxlength="60" placeholder="Opsional"></div></div></div></fieldset>
+          <fieldset class="fld"><legend>Notaris</legend><div class="dual2"><div><label for="notaris">Nominal</label><div class="inp"><em>Rp</em><input id="notaris" inputmode="numeric" autocomplete="off"></div></div><div><label for="kNot">Keterangan</label><div class="inp"><input id="kNot" type="text" autocomplete="off" maxlength="60" placeholder="Opsional"></div></div></div></fieldset>
+        </div>
       </form>
       <div class="res" id="res"></div>
     </div>
@@ -538,10 +559,14 @@ var now=new Date(), ym=now.getFullYear()+"-"+String(now.getMonth()+1).padStart(2
 /* rate = suku bunga per tahun dalam persen; awalnya 11,5 dan bisa diubah per jenis kredit */
 var S={rc:{plafon:500e6,pakai:300e6,n:12,basis:360,start:ym,rate:11.5},
        ki:{plafon:500e6,n:60,method:"sliding",start:ym,rate:11.5},
-       af:{plafon:200e6,n:12,method:"sliding",start:ym,rate:11.5}};
+       af:{plafon:200e6,n:12,method:"sliding",start:ym,rate:11.5},
+       /* contoh awal biaya: plafon 2,2 M, maksimum 2,5 M, 120 bulan, flat */
+       biaya:{plafon:2200e6,maks:2500e6,n:120,method:"flat",start:ym,rate:11.5,prov:1,blok:2,admin:1e6,asur:30e6,notaris:10e6,kAdmin:"",kAsur:"Masih perkiraan",kNot:"Masih perkiraan"}};
 function pctTxt(x){return String(Math.round(x*1000)/1000).replace(".",",")+"%"}
-var NAME={rc:"KMK RC",ki:"Kredit Investasi",af:"KMK Aflopend"};
-var TABS=["rc","ki","af"];
+var NAME={rc:"KMK RC",ki:"Kredit Investasi",af:"KMK Aflopend",biaya:"Biaya pengajuan kredit"};
+var TABS=["rc","ki","af","biaya"];
+var HEAD_BIAYA=["Biaya","Nominal","Keterangan"];
+function esc(t){return String(t).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
 var HEAD_LOAN=["Angs Ke","Bulan","Saldo Pokok","Angs Pokok","Bunga","Total Angs","Saldo Akhir"];
 var HEAD_RC=["Bulan Ke","Bulan","Hari","Saldo Terpakai","Bunga"];
 var tab="ki", showTbl=false, last=null;
@@ -635,6 +660,13 @@ function syncForm(){
   var p=s.start.split("-");$("#startY").value=p[0];$("#startM").value=p[1];
   $("#fPakai").hidden=$("#fBasis").hidden=tab!=="rc";
   $("#fMethod").hidden=tab==="rc";
+  $("#fMaks").hidden=$("#fBiaya").hidden=tab!=="biaya";$("#fStart").hidden=tab==="biaya";
+  if(tab==="biaya"){
+    $("#maks").value=s.maks?s.maks.toLocaleString("id-ID"):"";
+    $("#prov").value=String(s.prov).replace(".",",");$("#blok").value=s.blok;
+    ["admin","asur","notaris"].forEach(function(k){$("#"+k).value=s[k]?s[k].toLocaleString("id-ID"):""});
+    $("#kAdmin").value=s.kAdmin;$("#kAsur").value=s.kAsur;$("#kNot").value=s.kNot;
+  }
   if(tab==="rc"){$("#pakai").value=s.pakai?s.pakai.toLocaleString("id-ID"):"";
     $$("[data-b]").forEach(function(b){b.setAttribute("aria-pressed",String(+b.dataset.b===s.basis))});}
   else{$$("[data-m]").forEach(function(b){b.setAttribute("aria-pressed",String(b.dataset.m===s.method))});
@@ -655,6 +687,15 @@ function pulse(){
 }
 bindMoney($("#plafon"),function(v){S[tab].plafon=v});
 bindMoney($("#pakai"),function(v){S.rc.pakai=v});
+bindMoney($("#maks"),function(v){S.biaya.maks=v});
+["admin","asur","notaris"].forEach(function(k){bindMoney($("#"+k),function(v){S.biaya[k]=v})});
+[["kAdmin","kAdmin"],["kAsur","kAsur"],["kNot","kNot"]].forEach(function(p){$("#"+p[0]).addEventListener("input",function(){S.biaya[p[1]]=this.value;render()})});
+$("#prov").addEventListener("input",function(){
+  var v=this.value.replace(/\./g,",").replace(/[^\d,]/g,""),i=v.indexOf(",");
+  if(i>=0)v=v.slice(0,i+1)+v.slice(i+1).replace(/,/g,"").slice(0,3);
+  this.value=v.slice(0,6);var x=parseFloat(this.value.replace(",","."));S.biaya.prov=isFinite(x)?x:0;render();
+});
+$("#blok").addEventListener("input",function(){var d=this.value.replace(/\D/g,"").slice(0,2);this.value=d;S.biaya.blok=d?+d:0;render()});
 $("#n").addEventListener("input",function(){var d=this.value.replace(/\D/g,"").slice(0,3);this.value=d;S[tab].n=d?+d:0;render()});
 $("#form").addEventListener("submit",function(e){e.preventDefault()});
 $$("[data-m]").forEach(function(b){b.addEventListener("click",function(){if(S[tab].method===b.dataset.m)return;S[tab].method=b.dataset.m;syncForm();render();pulse()})});
@@ -662,7 +703,8 @@ $$("[data-b]").forEach(function(b){b.addEventListener("click",function(){if(S.rc
 $$("[data-tab]").forEach(function(b){b.addEventListener("click",function(){if(b.dataset.tab!==tab)setTab(b.dataset.tab,true)})});
 $("#tablist").addEventListener("keydown",function(e){
   var i=TABS.indexOf(tab),j=null;
-  if(e.key==="ArrowRight")j=(i+1)%3;else if(e.key==="ArrowLeft")j=(i+2)%3;else if(e.key==="Home")j=0;else if(e.key==="End")j=2;
+  var L=TABS.length;
+  if(e.key==="ArrowRight")j=(i+1)%L;else if(e.key==="ArrowLeft")j=(i+L-1)%L;else if(e.key==="Home")j=0;else if(e.key==="End")j=L-1;
   if(j===null)return;e.preventDefault();setTab(TABS[j],false);$("#tab-"+TABS[j]).focus();
 });
 
@@ -678,6 +720,12 @@ function chartSVG(rows){
 }
 function matrix(){
   var d=last,s=S[tab],isRC=d.type==="rc",head,body;
+  if(d.type==="biaya"){
+    body=d.rows.map(function(r){return [r.nama,Math.round(r.nom),r.ket]});body.push(["Total Biaya",Math.round(sum(d.rows,"nom")),""]);
+    var bi=[["Simulasi",NAME.biaya],["Plafon",Math.round(s.plafon)],["Maksimum kredit",Math.round(s.maks)],["Jangka waktu (bulan)",s.n],
+      ["Suku bunga per tahun",pctTxt(s.rate)],["Metode",s.method==="flat"?"Flat":"Sliding"],["Keterangan","Simulasi bersifat indikatif"]];
+    return {head:HEAD_BIAYA,body:body,info:bi,aoa:bi.concat([[]],[HEAD_BIAYA],body)};
+  }
   if(isRC){head=HEAD_RC;body=d.rows.map(function(r){return [r.k,r.bln,r.days,Math.round(r.use),Math.round(r.bg)]});body.push(["Total","","","",Math.round(sum(d.rows,"bg"))]);}
   else{head=HEAD_LOAN;body=d.rows.map(function(r){return [r.k,r.bln,Math.round(r.open),Math.round(r.pk),Math.round(r.bg),Math.round(r.tot),Math.round(r.close)]});body.push(["Total","","",Math.round(sum(d.rows,"pk")),"","",""]);}
   var info=[["Simulasi",NAME[tab]],["Plafon",Math.round(s.plafon)],["Jangka waktu (bulan)",s.n],["Suku bunga per tahun",pctTxt(s.rate)]];
@@ -687,7 +735,13 @@ function matrix(){
   return {head:head,body:body,info:info,aoa:info.concat([[]],[head],body)};
 }
 function tableHTML(){
-  var m=matrix(),isRC=last.type==="rc",num=isRC?[3,4]:[2,3,4,5,6];
+  var m=matrix(),isRC=last.type==="rc",num=numCols();
+  if(last.type==="biaya"){
+    var bt=m.body[m.body.length-1];
+    return '<div class="scroll" tabindex="0" role="region" aria-label="Tabel rincian biaya"><table class="angs biaya"><thead><tr>'+m.head.map(function(t){return '<th scope="col">'+t+"</th>"}).join("")+"</tr></thead><tbody>"
+      +m.body.slice(0,-1).map(function(r){return "<tr><td>"+esc(r[0])+"</td><td>"+rp(r[1])+"</td><td>"+esc(r[2])+"</td></tr>"}).join("")
+      +"</tbody><tfoot><tr><td>Total Biaya</td><td>"+rp(bt[1])+"</td><td></td></tr></tfoot></table></div>";
+  }
   var h="<tr>"+m.head.map(function(t){return '<th scope="col">'+t+"</th>"}).join("")+"</tr>";
   var rows=m.body.slice(0,-1),tot=m.body[m.body.length-1];
   var b=rows.map(function(r){return "<tr>"+r.map(function(v,i){return "<td>"+(num.indexOf(i)>=0?rp(v):v)+"</td>"}).join("")+"</tr>"}).join("");
@@ -710,7 +764,8 @@ function render(){
   var msg=!s.plafon?"Isi plafon kredit untuk melihat hasil."
     :isRC&&!s.pakai?"Isi rata-rata pemakaian per bulan untuk melihat bunga."
     :!s.n?"Isi jangka waktu dalam bulan untuk melihat hasil."
-    :!(s.rate>0)?"Isi suku bunga per tahun untuk melihat hasil, misalnya 11,5.":null;
+    :!(s.rate>0)?"Isi suku bunga per tahun untuk melihat hasil, misalnya 11,5."
+    :tab==="biaya"&&!s.maks?"Isi maksimum kredit untuk menghitung provisi.":null;
   if(rateBad){
     sumEl.innerHTML='<div class="state bad"><b>Hasil belum dihitung.</b> Suku bunga '+pctTxt(s.rate)+' per tahun terlalu tinggi. Isi angka di atas 0 sampai 50.</div>';
     res.innerHTML="";announce("Suku bunga terlalu tinggi. Hasil belum dihitung.");return;
@@ -721,6 +776,20 @@ function render(){
   }
   if(msg){sumEl.innerHTML='<div class="state">'+msg+"</div>";res.innerHTML="";announce(msg);return}
   var html,rows,tb;
+  if(tab==="biaya"){
+    /* DSPA/DSRA = n × angsuran pokok + bunga bulan pertama (dibulatkan dulu, seperti tabel bank) */
+    var lr=loanRows(s.plafon,s.n,s.method,s.start,s.rate/100),aw=Math.round(lr[0].tot),mt=s.method==="flat"?"flat":"sliding";
+    var items=[
+      {nama:"Blokir DSPA DSRA",nom:s.blok*aw,ket:s.blok+"x pokok + bunga di awal ("+mt+", "+rpS(aw)+" per bulan)"},
+      {nama:"Provisi",nom:Math.round(s.maks*s.prov/100),ket:pctTxt(s.prov)+" dari maksimum "+rpS(s.maks)},
+      {nama:"Admin",nom:s.admin,ket:s.kAdmin},{nama:"Asuransi",nom:s.asur,ket:s.kAsur},{nama:"Notaris",nom:s.notaris,ket:s.kNot}];
+    var tot=sum(items,"nom");last={type:"biaya",rows:items};
+    sumEl.innerHTML=kpis(["Total biaya",rpS(tot)],["Blokir DSPA/DSRA",rpS(items[0].nom)],["Angsuran bulan pertama",rpS(aw)]);
+    res.innerHTML='<div class="tools">'+'<button type="button" data-x="copy">'+ICO.copy+'Salin tabel</button><button type="button" data-x="xlsx">'+ICO.dl+'Unduh Excel</button><button type="button" data-x="pdf">'+ICO.dl+'Unduh PDF</button><button type="button" data-x="csv">'+ICO.dl+'Unduh CSV</button><output id="xMsg"></output></div>'
+      +tableHTML()
+      +'<p class="note">Blokir DSPA/DSRA biasanya berupa dana yang ditahan di rekening sebagai cadangan angsuran. Pastikan ketentuan blokir, provisi, admin, asuransi, dan notaris ke petugas bank. Simulasi bersifat indikatif.</p>';
+    announce("Total biaya "+rpS(tot)+".");return;
+  }
   if(isRC){
     rows=rcRows(s.pakai,s.n,s.basis,s.start,s.rate/100);tb=sum(rows,"bg");
     var avg=tb/rows.length,ut=s.pakai/s.plafon*100;last={type:"rc",rows:rows};
@@ -745,7 +814,7 @@ function render(){
 }
 
 /* ---------- Tabel: buka, salin, unduh ---------- */
-function fname(ext){var s=S[tab];return "angsuran-"+tab+(tab==="rc"?"":"-"+s.method)+"-"+Math.round(s.plafon/1e6)+"jt-"+s.n+"bln."+ext}
+function fname(ext){var s=S[tab];if(tab==="biaya")return "biaya-kredit-"+Math.round(s.plafon/1e6)+"jt."+ext;return"angsuran-"+tab+(tab==="rc"?"":"-"+s.method)+"-"+Math.round(s.plafon/1e6)+"jt-"+s.n+"bln."+ext}
 var ICO={
   copy:'<svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><rect x="5.5" y="5.5" width="8.5" height="8.5" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M10.5 5.5V3.5A1.5 1.5 0 0 0 9 2H3.5A1.5 1.5 0 0 0 2 3.5V9a1.5 1.5 0 0 0 1.5 1.5h2" fill="none" stroke="currentColor" stroke-width="1.6"/></svg>',
   dl:'<svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 2v8M4.5 6.5 8 10l3.5-3.5M3 13.5h10" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>'};
@@ -791,17 +860,19 @@ function loadScript(u){
     s.onload=function(){res()};s.onerror=function(){delete loading[u];s.remove();rej(new Error("gagal memuat"))};document.head.appendChild(s)});
   return loading[u];
 }
-function numCols(){return last.type==="rc"?[3,4]:[2,3,4,5,6]}
-function infoText(r){return (r[0]==="Plafon"||r[0]==="Pemakaian per bulan")?rpS(r[1]):String(r[1])}
+function numCols(){return last.type==="biaya"?[1]:last.type==="rc"?[3,4]:[2,3,4,5,6]}
+function infoText(r){return (r[0]==="Plafon"||r[0]==="Pemakaian per bulan"||r[0]==="Maksimum kredit")?rpS(r[1]):String(r[1])}
+function docTitle(){return last.type==="biaya"?"Rincian Biaya Kredit":"Jadwal Angsuran Pinjaman"}
 function makeXlsx(m){
   return loadScript(LIB.exceljs).then(function(){
     var nc=m.head.length,num=numCols(),hr=m.info.length+3;
     var wb=new ExcelJS.Workbook();wb.creator="Panduan Kredit Produktif";
     var ws=wb.addWorksheet("Angsuran",{views:[{state:"frozen",ySplit:hr,showGridLines:false}],
       pageSetup:{paperSize:9,orientation:"portrait",fitToPage:true,fitToWidth:1,fitToHeight:0,margins:{left:.4,right:.4,top:.5,bottom:.5,header:.3,footer:.3}}});
-    ws.columns=m.head.map(function(h,i){return {width:i===0?10:i===1?13:18}});
+    var isB=last.type==="biaya";
+    ws.columns=m.head.map(function(h,i){return {width:isB?[22,18,46][i]:i===0?10:i===1?13:18}});
     var navy="FF0E2A47",line={style:"thin",color:{argb:"FFD5DEE8"}};
-    ws.mergeCells(1,1,1,nc);var t=ws.getCell(1,1);t.value="Jadwal Angsuran Pinjaman";t.font={bold:true,size:15,color:{argb:navy}};ws.getRow(1).height=26;
+    ws.mergeCells(1,1,1,nc);var t=ws.getCell(1,1);t.value=docTitle();t.font={bold:true,size:15,color:{argb:navy}};ws.getRow(1).height=26;
     m.info.forEach(function(r,i){var R=2+i;ws.mergeCells(R,1,R,2);ws.mergeCells(R,3,R,nc);
       var a=ws.getCell(R,1);a.value=r[0];a.font={color:{argb:"FF56677A"}};
       var b=ws.getCell(R,3);b.value=infoText(r);b.font={bold:true,color:{argb:"FF12263A"}};b.alignment={horizontal:"left"}});
@@ -811,7 +882,7 @@ function makeXlsx(m){
     var rows=m.body.slice(0,-1),tot=m.body[m.body.length-1];
     rows.forEach(function(r,i){var row=ws.getRow(hr+1+i);row.values=r;
       row.eachCell({includeEmpty:true},function(c,col){var k=col-1;c.border={top:line,left:line,bottom:line,right:line};
-        if(num.indexOf(k)>=0){c.numFmt="#,##0";c.alignment={horizontal:"right"}}else c.alignment={horizontal:k===0?"center":"left"};
+        if(num.indexOf(k)>=0){c.numFmt="#,##0";c.alignment={horizontal:"right"}}else c.alignment={horizontal:k===0&&!isB?"center":"left",wrapText:isB&&k===2};
         if(i%2===1)c.fill={type:"pattern",pattern:"solid",fgColor:{argb:"FFF4F7FB"}}})});
     var fr=ws.getRow(hr+1+rows.length);fr.values=tot.map(function(v){return v===""?null:v});
     for(var k=1;k<=nc;k++){var c=fr.getCell(k);c.font={bold:true,color:{argb:navy}};c.fill={type:"pattern",pattern:"solid",fgColor:{argb:"FFEAF0F7"}};
@@ -822,13 +893,15 @@ function makeXlsx(m){
 function makePdf(m){
   return loadScript(LIB.jspdf).then(function(){return loadScript(LIB.autotable)}).then(function(){
     var doc=new window.jspdf.jsPDF({unit:"pt",format:"a4"}),W=doc.internal.pageSize.getWidth(),H=doc.internal.pageSize.getHeight(),num=numCols();
-    doc.setFont("helvetica","bold");doc.setFontSize(16);doc.setTextColor(14,42,71);doc.text("Jadwal Angsuran Pinjaman",40,50);
+    doc.setFont("helvetica","bold");doc.setFontSize(16);doc.setTextColor(14,42,71);doc.text(docTitle(),40,50);
     var y=74;doc.setFontSize(9.5);
     m.info.forEach(function(r){doc.setFont("helvetica","normal");doc.setTextColor(86,103,122);doc.text(String(r[0]),40,y);
       doc.setFont("helvetica","bold");doc.setTextColor(18,38,58);doc.text(infoText(r),160,y);y+=14});
     var cell=function(v,i){return v===""?"":num.indexOf(i)>=0?rp(v):String(v)};
     var body=m.body.slice(0,-1).map(function(r){return r.map(cell)}),foot=[m.body[m.body.length-1].map(cell)];
-    var cs={0:{halign:"center",cellWidth:44},1:{halign:"left"}};num.forEach(function(i){cs[i]={halign:"right"}});
+    var cs=last.type==="biaya"?{0:{halign:"left",cellWidth:130},1:{halign:"right",cellWidth:110},2:{halign:"left"}}
+      :{0:{halign:"center",cellWidth:44},1:{halign:"left"}};
+    if(last.type!=="biaya")num.forEach(function(i){cs[i]={halign:"right"}});
     doc.autoTable({head:[m.head],body:body,foot:foot,startY:y+6,margin:{left:40,right:40,bottom:44},theme:"grid",showFoot:"lastPage",
       styles:{font:"helvetica",fontSize:8.5,cellPadding:4,lineColor:[213,222,232],lineWidth:.5,textColor:[18,38,58]},
       headStyles:{fillColor:[14,42,71],textColor:255,fontStyle:"bold",halign:"center",valign:"middle"},
